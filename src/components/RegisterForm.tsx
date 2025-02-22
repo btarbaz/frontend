@@ -31,7 +31,7 @@ const RegisterForm: React.FC = () => {
       alert('User created, redirecting..');
       setTimeout(() => {
         navigate('/login');
-      }, 3000);
+      }, 1000);
       dispatch(reset());
     }
   }, [isSuccess, isError, message, dispatch, navigate]);
