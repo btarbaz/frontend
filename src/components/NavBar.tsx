@@ -57,7 +57,10 @@ const NavBar: React.FC = () => {
                 <Button
                   sx={{ color: 'red' }}
                   onClick={() => {
-                    dispatch(logoutThunk());
+                    dispatch(addCartThunk()).then(() =>
+                      dispatch(logoutThunk())
+                    );
+
                     dispatch(reset());
                     dispatch(clearCartInLocal());
                   }}

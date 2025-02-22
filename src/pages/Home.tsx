@@ -3,7 +3,6 @@ import NavBar from '../components/NavBar';
 import ProductList from '../components/product/ProductList';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {
-  addCartThunk,
   getCartThunk,
   getProducts,
   loadCartFromLocal,
@@ -17,7 +16,7 @@ const Home: React.FC = () => {
     dispatch(getProducts());
     console.log('user', user);
     if (user) {
-      dispatch(getCartThunk()).then(() => dispatch(addCartThunk()));
+      dispatch(getCartThunk());
     }
     dispatch(loadCartFromLocal());
 
