@@ -8,6 +8,13 @@ export type LoginData = {
   username: string;
 };
 
+export type CartItem = {
+  _id: string;
+  quantity: number;
+  title: string;
+  price: number;
+};
+
 export type ProductsType = {
   _id: string;
   title: string;

@@ -9,11 +9,11 @@ import {
 } from '@mui/material';
 import { ShoppingCartSharp } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../app/store';
-
 import { logoutThunk } from '../feature/auth/authSlice';
 
 const NavBar: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { cartQuantity } = useAppSelector(state => state.cart);
   const { user } = useAppSelector(state => state.auth);
 
   return (
@@ -71,7 +71,7 @@ const NavBar: React.FC = () => {
                   fontSize: '15px',
                 }}
               >
-                {3}
+                {cartQuantity}
               </div>
             </IconButton>
           </Box>

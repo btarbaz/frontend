@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Card,
   CardMedia,
@@ -8,6 +8,12 @@ import {
   Button,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useAppDispatch, useAppSelector } from '../../app/store';
+import {
+  addCartThunk,
+  decreaseCartQuantity,
+  increaseCartQuantity,
+} from '../../feature/cart/cartSlice';
 
 interface ProductCardProps {
   _id: string;
@@ -24,7 +30,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   price,
   description,
 }) => {
-  const quantity = 0;
+  const dispatch = useAppDispatch();
+  const { cartItems } = useAppSelector(state => state.cart);
+  const { user } = useAppSelector(state => state.auth);
+
+  const quantity = useMemo(() => {
+    return cartItems.find(item => item._id === _id)?.quantity || 0;
+  }, [cartItems, _id]);
 
   return (
     <Card sx={{ maxWidth: 345, m: 2, boxShadow: 3 }}>
@@ -59,6 +71,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <Button
               variant="contained"
               startIcon={<ShoppingCartIcon />}
+              onClick={() => {
+                dispatch(increaseCartQuantity({ _id, title, price }));
+                if (user?.username) dispatch(addCartThunk());
+              }}
               sx={{ width: '100%', height: '50px' }}
             >
               Add to Cart
@@ -81,13 +97,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   alignItems: 'center',
                 }}
               >
-                <Button variant="contained" size="small">
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => {
+                    dispatch(decreaseCartQuantity({ _id, title, price }));
+                    if (user?.username) dispatch(addCartThunk());
+                  }}
+                >
                   -
                 </Button>
                 <div>
                   <span style={{ fontSize: '20px' }}> {quantity} </span>{' '}
                 </div>
-                <Button variant="contained" size="small">
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => {
+                    dispatch(increaseCartQuantity({ _id, title, price }));
+                    if (user?.username) dispatch(addCartThunk());
+                  }}
+                >
                   +
                 </Button>
               </div>
