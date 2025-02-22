@@ -17,6 +17,7 @@ const login = async (userData: AuthFormData) => {
 
 const logout = async () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('username');
 };
 
 const authService = {

@@ -2,7 +2,12 @@ import React, { Fragment, useEffect } from 'react';
 import NavBar from '../components/NavBar';
 import ProductList from '../components/product/ProductList';
 import { useAppDispatch, useAppSelector } from '../app/store';
-import { getCartThunk, getProducts } from '../feature/cart/cartSlice';
+import {
+  addCartThunk,
+  getCartThunk,
+  getProducts,
+  loadCartFromLocal,
+} from '../feature/cart/cartSlice';
 
 const Home: React.FC = () => {
   const { user } = useAppSelector(state => state.auth);
@@ -10,7 +15,12 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     dispatch(getProducts());
-    if (user?.username) dispatch(getCartThunk());
+    console.log('user', user);
+    if (user) {
+      dispatch(getCartThunk()).then(() => dispatch(addCartThunk()));
+    }
+    dispatch(loadCartFromLocal());
+
     return () => {};
   }, [dispatch, user]);
 

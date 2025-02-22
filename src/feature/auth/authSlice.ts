@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authService from './authService';
-import { AuthFormData, LoginData } from '../../utils/customTypes';
+import { AuthFormData } from '../../utils/customTypes';
 
 // Get user from local Storage
 const user = {
@@ -8,16 +8,20 @@ const user = {
   token: localStorage.getItem('token')!,
 };
 
-const initialState = {
-  user: {
-    username: user ? user.username : null,
-    token: user ? user.token : null,
-  } as LoginData | null,
+const initialState: any = {
+  user: null,
   isError: false,
   isLoading: false,
   isSuccess: false,
   message: '',
 };
+
+if (user.username) {
+  initialState.user = {
+    username: user.username,
+    token: user.token,
+  };
+}
 
 export const registerThunk = createAsyncThunk(
   'auth/POST/REGISTER',

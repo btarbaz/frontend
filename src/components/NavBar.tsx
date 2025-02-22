@@ -10,7 +10,11 @@ import {
 import { ShoppingCartSharp } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import Cart from './Cart';
-import { addCartThunk, reset } from '../feature/cart/cartSlice';
+import {
+  addCartThunk,
+  clearCartInLocal,
+  reset,
+} from '../feature/cart/cartSlice';
 import { logoutThunk } from '../feature/auth/authSlice';
 
 const NavBar: React.FC = () => {
@@ -23,6 +27,7 @@ const NavBar: React.FC = () => {
     alert('Proceeding to checkout!');
     setIsCartOpen(false);
     dispatch(reset());
+    dispatch(clearCartInLocal());
     if (user?.username) dispatch(addCartThunk());
   };
   return (
@@ -51,7 +56,11 @@ const NavBar: React.FC = () => {
                 <Button sx={{ color: 'black' }}>{user.username}</Button>
                 <Button
                   sx={{ color: 'red' }}
-                  onClick={() => dispatch(logoutThunk())}
+                  onClick={() => {
+                    dispatch(logoutThunk());
+                    dispatch(reset());
+                    dispatch(clearCartInLocal());
+                  }}
                 >
                   Logout
                 </Button>

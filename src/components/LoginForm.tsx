@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { loginThunk, reset } from '../feature/auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { AuthFormData } from '../utils/customTypes';
-import { getCartThunk } from '../feature/cart/cartSlice';
 
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState<AuthFormData>({
@@ -29,7 +28,6 @@ const LoginForm: React.FC = () => {
     }
 
     if (isSuccess || user?.username) {
-      dispatch(getCartThunk());
       navigate('/');
     }
   }, [isSuccess, user, isError, message, dispatch, navigate]);

@@ -3,6 +3,12 @@ import { CartItem, ProductsType } from '../../utils/customTypes';
 import cartService from './cartService';
 import axios from '../../utils/axios';
 import { RootState } from '../../app/store';
+import {
+  clearCartLocal,
+  getCartLocal,
+  saveOrUpdateCartLocal,
+} from '../../utils/db';
+import { combineCartItems } from '../../utils/combinedCartItems';
 
 const initialState = {
   products: [] as ProductsType[] | [],
@@ -29,11 +35,11 @@ export const addCartThunk = createAsyncThunk<
 
 export const getCartThunk = createAsyncThunk(
   'cart/GET/ALLCART',
-  async (_, thunkAPI) => {
+  async (_, { rejectWithValue }) => {
     try {
       return await cartService.getCart();
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      return rejectWithValue(error);
     }
   }
 );
@@ -45,6 +51,46 @@ export const getProducts = createAsyncThunk<ProductsType[]>(
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+// Async thunk to save or update the cart in IndexedDB
+export const saveCartInLocal = createAsyncThunk<
+  any,
+  void,
+  { state: RootState; rejectValue: unknown }
+>('db/cart/saveCart', async (_, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    await saveOrUpdateCartLocal(state.cart.cartItems);
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+// Async thunk to load the cart from IndexedDB
+export const loadCartFromLocal = createAsyncThunk<
+  any,
+  void,
+  { state: RootState; rejectValue: unknown }
+>('cart/loadCart', async (_, { getState, rejectWithValue }) => {
+  try {
+    const items = await getCartLocal();
+    return items;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+// Async thunk to clear the cart in IndexedDB
+export const clearCartInLocal = createAsyncThunk(
+  'cart/clearCart',
+  async (_, { rejectWithValue }) => {
+    try {
+      await clearCartLocal();
+    } catch (error) {
+      return rejectWithValue(error);
     }
   }
 );
@@ -136,7 +182,11 @@ export const cartSlice = createSlice({
       .addCase(getCartThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.cartItems = action.payload as CartItem[] | [];
+        console.log(action.payload);
+        state.cartItems = combineCartItems(
+          action.payload as CartItem[] | [],
+          state.cartItems
+        );
         state.cartQuantity = state.cartItems
           .map(item => item.quantity) // Extract quantities
           .reduce((total, qty) => total + qty, 0); // Sum them
@@ -161,6 +211,55 @@ export const cartSlice = createSlice({
         }
       )
       .addCase(getProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message =
+          (action.payload as string) ||
+          action.error.message ||
+          'Something went wrong';
+      })
+      .addCase(saveCartInLocal.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(saveCartInLocal.fulfilled, state => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(saveCartInLocal.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message =
+          (action.payload as string) ||
+          action.error.message ||
+          'Something went wrong';
+      })
+      .addCase(loadCartFromLocal.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(loadCartFromLocal.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.cartItems = action.payload;
+        state.cartQuantity = state.cartItems
+          .map(item => item.quantity) // Extract quantities
+          .reduce((total, qty) => total + qty, 0); // Sum them
+      })
+      .addCase(loadCartFromLocal.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message =
+          (action.payload as string) ||
+          action.error.message ||
+          'Something went wrong';
+      })
+      .addCase(clearCartInLocal.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(clearCartInLocal.fulfilled, state => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(clearCartInLocal.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message =

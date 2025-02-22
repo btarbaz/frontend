@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { Container } from '@mui/material';
+import NotFound from './pages/NotFound';
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,8 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          {/*  404 page */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
     </Router>

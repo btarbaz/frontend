@@ -12,7 +12,11 @@ import {
 } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
-import { addCartThunk, removeFromCart } from '../feature/cart/cartSlice';
+import {
+  addCartThunk,
+  removeFromCart,
+  saveCartInLocal,
+} from '../feature/cart/cartSlice';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { CartItem } from '../utils/customTypes';
 
@@ -77,6 +81,7 @@ const Cart: React.FC<CartProps> = ({
                   onClick={() => {
                     dispatch(removeFromCart(item._id));
                     if (user?.username) dispatch(addCartThunk());
+                    dispatch(saveCartInLocal());
                   }}
                 >
                   Remove

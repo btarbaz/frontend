@@ -13,6 +13,7 @@ import {
   addCartThunk,
   decreaseCartQuantity,
   increaseCartQuantity,
+  saveCartInLocal,
 } from '../../feature/cart/cartSlice';
 
 interface ProductCardProps {
@@ -74,6 +75,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               onClick={() => {
                 dispatch(increaseCartQuantity({ _id, title, price }));
                 if (user?.username) dispatch(addCartThunk());
+                dispatch(saveCartInLocal());
               }}
               sx={{ width: '100%', height: '50px' }}
             >
@@ -103,6 +105,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   onClick={() => {
                     dispatch(decreaseCartQuantity({ _id, title, price }));
                     if (user?.username) dispatch(addCartThunk());
+                    dispatch(saveCartInLocal());
                   }}
                 >
                   -
@@ -116,6 +119,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   onClick={() => {
                     dispatch(increaseCartQuantity({ _id, title, price }));
                     if (user?.username) dispatch(addCartThunk());
+                    dispatch(saveCartInLocal());
                   }}
                 >
                   +
