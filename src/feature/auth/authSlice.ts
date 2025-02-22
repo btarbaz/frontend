@@ -41,6 +41,10 @@ export const loginThunk = createAsyncThunk(
   }
 );
 
+export const logoutThunk = createAsyncThunk('auth/logoutUser', async () => {
+  await authService.logout();
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -85,6 +89,13 @@ export const authSlice = createSlice({
           (action.payload as string) ||
           action.error.message ||
           'Something went wrong';
+      })
+      .addCase(logoutThunk.fulfilled, state => {
+        state.user = null;
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.message = '';
       });
   },
 });

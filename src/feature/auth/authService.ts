@@ -15,9 +15,14 @@ const login = async (userData: AuthFormData) => {
   return res.data;
 };
 
+const logout = async () => {
+  localStorage.removeItem('token');
+};
+
 const authService = {
   register,
   login,
+  logout,
 };
 
 export default authService;
