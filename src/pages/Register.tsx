@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import RegisterForm from '../components/RegisterForm';
 
-const Register = () => {
-  return <div>Register</div>;
+const Register: React.FC = () => {
+  return (
+    <Fragment>
+      <RegisterForm />
+    </Fragment>
+  );
 };
 
 export default Register;
