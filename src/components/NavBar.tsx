@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   AppBar,
   Box,
@@ -9,13 +9,22 @@ import {
 } from '@mui/material';
 import { ShoppingCartSharp } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../app/store';
+import Cart from './Cart';
+import { addCartThunk, reset } from '../feature/cart/cartSlice';
 import { logoutThunk } from '../feature/auth/authSlice';
 
 const NavBar: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { cartQuantity } = useAppSelector(state => state.cart);
+  const { cartQuantity, cartItems } = useAppSelector(state => state.cart);
   const { user } = useAppSelector(state => state.auth);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const handleCheckout = () => {
+    alert('Proceeding to checkout!');
+    setIsCartOpen(false);
+    dispatch(reset());
+    if (user?.username) dispatch(addCartThunk());
+  };
   return (
     <AppBar sx={{ p: 1.5 }} color="inherit">
       <Container>
@@ -57,7 +66,10 @@ const NavBar: React.FC = () => {
                 </Button>
               </Fragment>
             )}
-            <IconButton sx={{ position: 'relative' }}>
+            <IconButton
+              sx={{ position: 'relative' }}
+              onClick={() => setIsCartOpen(true)}
+            >
               <ShoppingCartSharp />
               <div
                 style={{
@@ -76,6 +88,13 @@ const NavBar: React.FC = () => {
             </IconButton>
           </Box>
         </Box>
+        {/* Cart Component */}
+        <Cart
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cartItems={cartItems}
+          onCheckout={handleCheckout}
+        />
       </Container>
     </AppBar>
   );
