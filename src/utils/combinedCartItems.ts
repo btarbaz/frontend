@@ -5,8 +5,6 @@ export const combineCartItems = (
   cart1: CartItem[],
   cart2: CartItem[]
 ): CartItem[] => {
-  console.log('cart1', cart1);
-  console.log('cart2', cart2);
   const combinedCartMap = new Map<string, CartItem>();
 
   // Helper function to add items to the map
@@ -14,8 +12,7 @@ export const combineCartItems = (
     if (combinedCartMap.has(item._id)) {
       // If the item already exists, update the quantity
       const existingItem = combinedCartMap.get(item._id)!;
-      console.log(existingItem);
-      console.log(item);
+
       combinedCartMap.set(item._id, {
         ...existingItem,
         quantity: existingItem.quantity + item.quantity,

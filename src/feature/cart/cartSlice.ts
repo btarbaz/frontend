@@ -182,7 +182,6 @@ export const cartSlice = createSlice({
       .addCase(getCartThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        console.log(action.payload);
         state.cartItems = combineCartItems(
           action.payload as CartItem[] | [],
           state.cartItems

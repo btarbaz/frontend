@@ -58,7 +58,6 @@ export const getCartLocal = async (): Promise<CartItem[]> => {
 
     request.onsuccess = () => {
       const cart = request.result;
-      console.log(cart);
       if (cart && cart.cartItems) {
         console.log('Retrieved cart items:', cart.cartItems);
         resolve(cart.cartItems);

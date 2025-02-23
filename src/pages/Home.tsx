@@ -14,7 +14,6 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     dispatch(getProducts());
-    console.log('user', user);
     if (user) {
       dispatch(getCartThunk());
     }
